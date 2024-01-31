@@ -69,3 +69,49 @@ paradas = {
     'abajo': 320 
     }
 
+
+class Semaforos:
+    def __init__(self, verde, amarillo, rojo):
+        self.verde = verde
+        self.amarillo = amarillo
+        self.rojo = rojo
+
+def valoresIniciales():
+    S1 = Semaforos(verde[0], amarillo = amarillo, rojo = 0)
+    señales.append(S1)
+    S2 = Semaforos(verde=verde[1], amarillo=amarillo, rojo= S1.rojo + S1.amarillo + S1.verde)
+    señales.append(S1)
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
