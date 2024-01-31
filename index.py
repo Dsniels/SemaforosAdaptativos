@@ -90,6 +90,31 @@ def valoresIniciales():
 
 
 
+# Bucle principal
+clock = pygame.time.Clock()
+running = True
+
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    screen.fill(BLANCO)
+
+    # Dibujar intersección con carriles grises
+
+
+    # Dibujar rectángulos azules representando autos
+   
+    pygame.display.flip()
+    clock.tick(30)
+
+pygame.quit()
+sys.exit()
+
+
+
+
 
 
 
