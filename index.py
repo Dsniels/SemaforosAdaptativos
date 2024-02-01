@@ -54,25 +54,25 @@ y = {
     }
 
 autos = {
-    'right': {
+    'derecha': {
         0: [], 
         1: [], 
         2: [], 
         'crossed': 0
         }, 
-    'down': {
+    'abajo': {
         0: [],
         1: [], 
         2: [], 
         'crossed': 0
         },
-    'left': {
+    'izquierda': {
         0: [], 
         1: [], 
         2: [], 
         'crossed': 0
         }, 
-    'up': {
+    'arriba': {
         0: [], 
         1: [], 
         2: [], 
@@ -81,17 +81,17 @@ autos = {
 }
 
 numeroDireccion = {
-    0: 'right', 
-    1: 'down', 
-    2: 'left', 
-    3: 'up'
+    0: 'derecha', 
+    1: 'abajo', 
+    2: 'izquierda', 
+    3: 'arriba'
     }
 
 semaforoCoordenadas = [(530, 230), (810, 230), (810, 570), (530, 570)]
 
 paradas = {
-    'rigth': 500, 
-    'left': 810, 
+    'derecha': 500, 
+    'izquierda': 810, 
     'arriba': 545, 
     'abajo': 320 
     }
@@ -119,11 +119,20 @@ class Auto:
         self.velocidad = 0.25
         self.cruzo = 0
         self.image = pygame.Rect(self.x, self.y, 20, 20) #Rectangulo que representa el auto
-        autos[direction][carril].append(self)
+        autos[direction][carril].append(self) #Esta linea almacenara el auto en el carril correspondiente 
         self.i = len(autos[direction][carril]) - 1
 
-        
-         
+
+        #para determinar en que coordenada se debe parar el auto es necesario saber si hay mas autos en su carril
+        #y si estos autos estan detenidos 
+        if(len(autos[direction][carril]) > 1 and autos[direction][carril][self.i -1].cruzo == 0):
+
+            if direction == 'derecha':
+                self.stop = autos[direction][carril][self.i-1].stop - autos[direction][carril][self.i - 1].rect.width - 15
+
+
+
+
 
 
 
