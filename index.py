@@ -54,11 +54,38 @@ y = {
     }
 
 autos = {
-    'right': {0: [], 1: [], 2: [], 'crossed': 0}, 'down': {0: [], 1: [], 2: [], 'crossed': 0},
-    'left': {0: [], 1: [], 2: [], 'crossed': 0}, 'up': {0: [], 1: [], 2: [], 'crossed': 0}
+    'right': {
+        0: [], 
+        1: [], 
+        2: [], 
+        'crossed': 0
+        }, 
+    'down': {
+        0: [],
+        1: [], 
+        2: [], 
+        'crossed': 0
+        },
+    'left': {
+        0: [], 
+        1: [], 
+        2: [], 
+        'crossed': 0
+        }, 
+    'up': {
+        0: [], 
+        1: [], 
+        2: [], 
+        'crossed': 0
+        }
 }
 
-numeroDireccion = {0: 'right', 1: 'down', 2: 'left', 3: 'up'}
+numeroDireccion = {
+    0: 'right', 
+    1: 'down', 
+    2: 'left', 
+    3: 'up'
+    }
 
 semaforoCoordenadas = [(530, 230), (810, 230), (810, 570), (530, 570)]
 
@@ -82,7 +109,26 @@ def valoresIniciales():
     S2 = Semaforos(verde=verde[1], amarillo=amarillo, rojo= S1.rojo + S1.amarillo + S1.verde)
     señales.append(S1)
 
-    
+class Auto:
+    def __init__(self, carril, direction): #carril en el que se generarar, direccion a la que ira
+        self.carril = carril
+        self.direccion = carril
+        #coordenadas en las que se generarar
+        self.x = x[direction][carril]
+        self.y = y[direction][carril]
+        self.velocidad = 0.25
+        self.cruzo = 0
+        self.image = pygame.Rect(self.x, self.y, 20, 20) #Rectangulo que representa el auto
+        autos[direction][carril].append(self)
+        self.i = len(autos[direction][carril]) - 1
+
+        
+         
+
+
+
+
+        
 
 
 
