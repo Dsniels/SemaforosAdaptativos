@@ -136,7 +136,61 @@ class Auto:
             if direction == 'arriba':
                 self.stop = autos[direction][carril][self.i-1].stop + autos[direction][carril][self.i - 1].rect.width + 15
 
+        else:
+            self.stop = paradas[direction]
+
+    
+
+    #funcion para mover los autos
+    def mover(self):
+
+        if self.direccion == 'derecha':
+
+
+            if(self.cruzo == 0 and self.image.x + self.image.width > paradas[self.direccion]):
+                self.cruzo = 1
+                #  *  ||    cruzo == 0
+                #   * ||    cruzo == 0
+                #     || *  cruzo == 1
+
+            if((self.image.x + self.image.width <= self.stop or self.cruzo == 1 or (señalEnVerde == 0 and señalEnAmarillo == 0)) and 
+               (self.i == 0 or self.image.x + self.image.width < (autos[self.direccion][self.carril][self.i - 1 ].image.x - 15))):
+                self.image.x += self.velocidad
+
+        elif self.direccion == 'abajo':
+
+
+            if(self.cruzo == 0 and self.image.y + self.image.width > paradas[self.direccion]):
+                self.cruzo = 1
+                
+            if((self.image.y + self.image.width <= self.stop or self.cruzo == 1 or (señalEnVerde == 1 and señalEnAmarillo == 0)) and 
+               (self.i == 0 or self.image.y + self.image.width < (autos[self.direccion][self.carril][self.i - 1 ].image.y - 15))): 
+                self.image.y += self.velocidad
+
+        elif self.direccion == 'izquierda':
+
+
+            if(self.cruzo == 0 and self.image.x + self.image.width < paradas[self.direccion]):
+                self.cruzo = 1
+            if((self.image.x >= self.stop or self.cruzo == 1 or (señalEnVerde == 2 and señalEnAmarillo == 0)) and 
+               (self.i == 0 or self.image.x + self.image.width > (autos[self.direccion][self.carril][self.i - 1 ].image.x + autos[self.direccion][self.carril][self.i - 1].image.width + 15))):
+                self.image.x -= self.velocidad
+
         
+        elif self.direccion == 'arriba':
+            if(self.cruzo == 0 and self.image.y + self.image.width < paradas[self.direccion]):
+                self.cruzo = 1
+            if((self.image.y >= self.stop or self.cruzo == 1 or (señalEnVerde == 3 and señalEnAmarillo == 0)) and 
+               (self.i == 0 or self.image.y + self.image.width > (autos[self.direccion][self.carril][self.i - 1 ].image.y + autos[self.direccion][self.carril][self.i - 1].image.width + 15))):
+                self.image.y -= self.velocidad
+
+
+
+
+
+    
+
+
 
 
 
