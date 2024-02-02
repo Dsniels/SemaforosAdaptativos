@@ -129,9 +129,14 @@ class Auto:
 
             if direction == 'derecha':
                 self.stop = autos[direction][carril][self.i-1].stop - autos[direction][carril][self.i - 1].rect.width - 15
+            if direction == 'izquierda':
+                self.stop = autos[direction][carril][self.i-1].stop + autos[direction][carril][self.i - 1].rect.width + 15
+            if direction == 'abajo':
+                self.stop = autos[direction][carril][self.i-1].stop - autos[direction][carril][self.i - 1].rect.width - 15
+            if direction == 'arriba':
+                self.stop = autos[direction][carril][self.i-1].stop + autos[direction][carril][self.i - 1].rect.width + 15
 
-
-
+        
 
 
 
