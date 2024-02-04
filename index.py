@@ -4,8 +4,6 @@ import random
 import threading
 import time
 
-# Inicializar Pygame
-pygame.init()
 
 # Colores
 BLANCO = (255, 255, 255)
@@ -92,6 +90,9 @@ paradas = {
     'abajo': 320 
     }
 
+# Inicializar Pygame
+pygame.init()
+simulacion = pygame.sprite.Group()
 
 class Semaforos:
     def __init__(self, verde, amarillo, rojo):
@@ -266,11 +267,7 @@ class inicio:
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Simulador de Tráfico")
 
-    
-    #colores de semaforos
-    SemaforoRojo = pygame.draw.circle(screen, color=(255,0,0), width= 10)
-    SemaforoAmarillo = pygame.draw.circle(screen, color=(240,437,0), width= 10)
-    SemaforoVerde = pygame.draw.circle(screen, color=(0,255,0), width= 10)
+
 
     thread_autos = threading.Thread(name = "Creacion de autos", target=crearAutos, args=())
     thread_autos.daemon = True
@@ -286,26 +283,25 @@ class inicio:
                 false = False
                 sys.exit()
 
-        screen.blit(background, (0,0)) #mostrara en la ventana el fondo blanco
+        screen.fill(background) #mostrara en la ventana el fondo blanco
 
 
         #este ciclo for mostrara los semaforos en las coordenadas declaradas
         for i in range(0, numeroSemaforos):
             if i == señalEnVerde:
                 if señalEnAmarillo == 1:
-                    screen.blit(SemaforoAmarillo, semaforoCoordenadas[i])
+                    SemaforoAmarillo = pygame.draw.circle(screen, color=(240,437,0), width= 10, center= semaforoCoordenadas[i], radius= 5)
                 else:
-                    screen.blit(SemaforoVerde, semaforoCoordenadas[i])
-            else:
-                screen.blit(SemaforoRojo, semaforoCoordenadas[i])
+                    SemaforoVerde = pygame.draw.circle(screen, color=(0,255,0),  center= semaforoCoordenadas[i], radius= 5)
+            else:               
+                SemaforoRojo = pygame.draw.circle(screen, color=(255,0,0), width= 10, center= semaforoCoordenadas[i], radius= 5)
 
 
+        #mostrar los autos
+        for AUTO in simulacion:
+            pygame.draw.rect(screen, AZUL, AUTO.rect)
+            AUTO.mover()
         
+        pygame.display.update()
 
-        screen.fill(BLANCO)
-    
-        pygame.display.flip()
-        clock.tick(30)
-
-    pygame.quit()
-    sys.exit()
+inicio()
