@@ -92,7 +92,7 @@ paradas = {
 
 # Inicializar Pygame
 pygame.init()
-simulacion = pygame.sprite.Group()
+simulacion = []
 
 class Semaforos:
     def __init__(self, verde, amarillo, rojo):
@@ -109,11 +109,11 @@ def valoresIniciales():
 class Auto:
     def __init__(self, carril, direction): #carril en el que se generarar, direccion a la que ira
         self.carril = carril
-        self.direccion = carril
+        self.direccion = direction
         #coordenadas en las que se generarar
         self.x = x[direction][carril]
         self.y = y[direction][carril]
-        self.velocidad = 0.25
+        self.velocidad = 2.25
         self.cruzo = 0
         self.image = pygame.Rect(self.x, self.y, 20, 20) #Rectangulo que representa el auto
         autos[direction][carril].append(self) #Esta linea almacenara el auto en el carril correspondiente 
@@ -125,16 +125,18 @@ class Auto:
         if(len(autos[direction][carril]) > 1 and autos[direction][carril][self.i -1].cruzo == 0):
 
             if direction == 'derecha':
-                self.stop = autos[direction][carril][self.i-1].stop - autos[direction][carril][self.i - 1].rect.width - 15
+                self.stop = autos[direction][carril][self.i-1].stop - autos[direction][carril][self.i - 1].image.width - 15
             if direction == 'izquierda':
-                self.stop = autos[direction][carril][self.i-1].stop + autos[direction][carril][self.i - 1].rect.width + 15
+                self.stop = autos[direction][carril][self.i-1].stop + autos[direction][carril][self.i - 1].image.width + 15
             if direction == 'abajo':
-                self.stop = autos[direction][carril][self.i-1].stop - autos[direction][carril][self.i - 1].rect.width - 15
+                self.stop = autos[direction][carril][self.i-1].stop - autos[direction][carril][self.i - 1].image.width - 15
             if direction == 'arriba':
-                self.stop = autos[direction][carril][self.i-1].stop + autos[direction][carril][self.i - 1].rect.width + 15
+                self.stop = autos[direction][carril][self.i-1].stop + autos[direction][carril][self.i - 1].image.width + 15
 
         else:
             self.stop = paradas[direction]
+
+        simulacion.append(self)
 
     
 
@@ -144,42 +146,42 @@ class Auto:
         if self.direccion == 'derecha':
 
 
-            if(self.cruzo == 0 and self.image.x + self.image.width > paradas[self.direccion]):
+            if(self.cruzo == 0 and self.image.x + self.image.size[0] > paradas[self.direccion]):
                 self.cruzo = 1
                 #  *  ||    cruzo == 0
                 #   * ||    cruzo == 0
                 #     || *  cruzo == 1
 
-            if((self.image.x + self.image.width <= self.stop or self.cruzo == 1 or (señalEnVerde == 0 and señalEnAmarillo == 0)) and 
-               (self.i == 0 or self.image.x + self.image.width < (autos[self.direccion][self.carril][self.i - 1 ].image.x - 15))):
-                self.image.x += self.velocidad
+            if((self.image.x + self.image.size[0] <= self.stop or self.cruzo == 1 or (señalEnVerde == 0 and señalEnAmarillo == 0)) and 
+               (self.i == 0 or self.image.x + self.image.size[0] < (autos[self.direccion][self.carril][self.i - 1 ].image.x - 15))):
+                self.x += self.velocidad
 
         elif self.direccion == 'abajo':
 
 
-            if(self.cruzo == 0 and self.image.y + self.image.width > paradas[self.direccion]):
+            if(self.cruzo == 0 and self.image.y + self.image.size[0] > paradas[self.direccion]):
                 self.cruzo = 1
                 
-            if((self.image.y + self.image.width <= self.stop or self.cruzo == 1 or (señalEnVerde == 1 and señalEnAmarillo == 0)) and 
-               (self.i == 0 or self.image.y + self.image.width < (autos[self.direccion][self.carril][self.i - 1 ].image.y - 15))): 
-                self.image.y += self.velocidad
+            if((self.image.y + self.image.size[0] <= self.stop or self.cruzo == 1 or (señalEnVerde == 1 and señalEnAmarillo == 0)) and 
+               (self.i == 0 or self.image.y + self.image.size[0] < (autos[self.direccion][self.carril][self.i - 1 ].image.y - 15))): 
+                self.y += self.velocidad
 
         elif self.direccion == 'izquierda':
 
 
-            if(self.cruzo == 0 and self.image.x + self.image.width < paradas[self.direccion]):
+            if(self.cruzo == 0 and self.image.x + self.image.size[0] < paradas[self.direccion]):
                 self.cruzo = 1
             if((self.image.x >= self.stop or self.cruzo == 1 or (señalEnVerde == 2 and señalEnAmarillo == 0)) and 
-               (self.i == 0 or self.image.x + self.image.width > (autos[self.direccion][self.carril][self.i - 1 ].image.x + autos[self.direccion][self.carril][self.i - 1].image.width + 15))):
-                self.image.x -= self.velocidad
+               (self.i == 0 or self.image.x + self.image.size[0] > (autos[self.direccion][self.carril][self.i - 1 ].image.x + autos[self.direccion][self.carril][self.i - 1].image.width + 15))):
+                self.x -= self.velocidad
 
         
         elif self.direccion == 'arriba':
-            if(self.cruzo == 0 and self.image.y + self.image.width < paradas[self.direccion]):
+            if(self.cruzo == 0 and self.image.y + self.image.size[0] < paradas[self.direccion]):
                 self.cruzo = 1
             if((self.image.y >= self.stop or self.cruzo == 1 or (señalEnVerde == 3 and señalEnAmarillo == 0)) and 
-               (self.i == 0 or self.image.y + self.image.width > (autos[self.direccion][self.carril][self.i - 1 ].image.y + autos[self.direccion][self.carril][self.i - 1].image.width + 15))):
-                self.image.y -= self.velocidad
+               (self.i == 0 or self.image.y + self.image.size[0] > (autos[self.direccion][self.carril][self.i - 1 ].image.y + autos[self.direccion][self.carril][self.i - 1].image.width + 15))):
+                self.y -= self.velocidad
 
 
 def inicializacionSemaforos():
@@ -187,27 +189,32 @@ def inicializacionSemaforos():
     #crear semaforos
     S1 = Semaforos(verde[0],amarillo, rojo)
     señales.append(S1)
-    S2 = Semaforos(verde[1], amarillo, rojo)
+    S2 = Semaforos(verde[1], amarillo,S1.verde + S1.amarillo + S1.rojo)
     señales.append(S2)
     S3 = Semaforos(verde[2], amarillo, rojo)
     señales.append(S3)
     S4 = Semaforos(verde[3], amarillo, rojo)
     señales.append(S4)
-
+    cicloSemaforos()
 
 
 def cicloSemaforos():
+    global señalEnVerde, señalEnAmarillo, proximaVerde
 
     while(señales[señalEnVerde].verde > 0 ):
         temporizador()
         time.sleep(1)
     señalEnAmarillo = 1
+
+    for i in range(0, 3):
+	    for vehicle in autos[numeroDireccion[señalEnVerde]][i]:
+              vehicle.stop = paradas[numeroDireccion[señalEnVerde]]
+              
     while(señales[señalEnVerde].amarillo > 0):
         temporizador()
         time.sleep(1)
     señalEnAmarillo = 0
 
-    
     #estas lineas resetean los tiempos de los semaforos actuales
     señales[señalEnVerde].verde = verde[señalEnVerde]
     señales[señalEnVerde].amarillo = amarillo
@@ -215,8 +222,8 @@ def cicloSemaforos():
 
     señalEnVerde = proximaVerde #cambia de semaforo actual 
     proximaVerde  = (señalEnVerde + 1) % numeroSemaforos #aumenta el valor para ir al proximo semaforo
-    señales[proximaVerde].rojo = señales[señalEnVerde].amarillo + señalEnAmarillo[señalEnVerde].verde 
-    
+    señales[proximaVerde].rojo = señales[señalEnVerde].amarillo + señalEnAmarillo * señales[señalEnVerde].verde
+
     cicloSemaforos()
 
 
@@ -235,24 +242,21 @@ def temporizador():
 
 def crearAutos():
 
-    false = True
-
-    while(false):
-
-        carril = random.randint(0,3)
-        temp = random.randint(0,3)
-        Direccion = 0
-        if temp  == 0:
-            Direccion = 0
-        elif temp  == 1:
-            Direccion = 1
-        elif temp == 2:
-            Direccion = 2
-        elif temp == 3:
-            Direccion = 3
-
-        Auto(carril= carril, direction= numeroDireccion[Direccion])
-        time.sleep(1)
+	while True:
+		carril = random.randint(1, 2)
+		temp = random.randint(0, 99)
+		direction_number = 0
+		dist = [25, 50, 75, 100]
+		if temp < dist[0]:
+			direction_number = 0
+		elif temp < dist[1]:
+			direction_number = 1
+		elif temp < dist[2]:
+			direction_number = 2
+		elif (temp < dist[3]):
+			direction_number = 3
+		Auto(carril, numeroDireccion[direction_number])
+		time.sleep(1)
 
 
 class inicio:
@@ -274,6 +278,9 @@ class inicio:
     thread_autos.start()
 
     false = True
+    AMARILLO = (240,255,0)
+    ROJO = (255,0,0)
+    VERDE = (0, 255, 0)
 
     background = BLANCO
 
@@ -290,16 +297,16 @@ class inicio:
         for i in range(0, numeroSemaforos):
             if i == señalEnVerde:
                 if señalEnAmarillo == 1:
-                    SemaforoAmarillo = pygame.draw.circle(screen, color=(240,437,0), width= 10, center= semaforoCoordenadas[i], radius= 5)
+                    SemaforoAmarillo = pygame.draw.circle(screen, color=AMARILLO, width= 10, center= semaforoCoordenadas[i], radius= 5)
                 else:
-                    SemaforoVerde = pygame.draw.circle(screen, color=(0,255,0),  center= semaforoCoordenadas[i], radius= 5)
+                    SemaforoVerde = pygame.draw.circle(screen, color=VERDE,  center= semaforoCoordenadas[i], radius= 5)
             else:               
-                SemaforoRojo = pygame.draw.circle(screen, color=(255,0,0), width= 10, center= semaforoCoordenadas[i], radius= 5)
+                SemaforoRojo = pygame.draw.circle(screen, color=ROJO, width= 10, center= semaforoCoordenadas[i], radius= 5)
 
 
         #mostrar los autos
         for AUTO in simulacion:
-            pygame.draw.rect(screen, AZUL, AUTO.rect)
+            pygame.draw.rect(screen, AZUL, AUTO.image)
             AUTO.mover()
         
         pygame.display.update()
