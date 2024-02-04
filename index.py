@@ -237,6 +237,29 @@ def temporizador():
 
 
 
+def crearAutos():
+
+    false = True
+
+    while(false):
+
+        carril = random.randint(0,3)
+        temp = random.randint(0,3)
+        Direccion = 0
+        if temp  == 0:
+            Direccion = 0
+        elif temp  == 1:
+            Direccion = 1
+        elif temp == 2:
+            Direccion = 2
+        elif temp == 3:
+            Direccion = 3
+
+        Auto(carril= carril, direction= numeroDireccion[Direccion])
+        time.sleep(1)
+
+
+
 # Bucle principal
 clock = pygame.time.Clock()
 running = True
