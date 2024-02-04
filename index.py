@@ -7,11 +7,6 @@ import time
 # Inicializar Pygame
 pygame.init()
 
-# Configuración de la pantalla
-WIDTH, HEIGHT = 1400, 700
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Simulador de Tráfico")
-
 # Colores
 BLANCO = (255, 255, 255)
 AZUL = (0, 0, 255)
@@ -259,54 +254,38 @@ def crearAutos():
         time.sleep(1)
 
 
+class inicio:
+    
+    thread_inicio = threading.Thread(name="Inicio", target= inicializacionSemaforos, args=())
+    thread_inicio.daemon = True
+    thread_inicio.start()
 
-# Bucle principal
-clock = pygame.time.Clock()
-running = True
-
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    screen.fill(BLANCO)
-
-    # Dibujar intersección con carriles grises
+    
+    # Configuración de la pantalla
+    WIDTH, HEIGHT = 1400, 700
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Simulador de Tráfico")
 
 
-    # Dibujar rectángulos azules representando autos
-   
-    pygame.display.flip()
-    clock.tick(30)
-
-pygame.quit()
-sys.exit()
+    SemaforoRojo = pygame.draw.circle(screen, color=(255,0,0), width= 10)
+    SemaforoAmarillo = pygame.draw.circle(screen, color=(240,437,0), width= 10)
+    SemaforoVerde = pygame.draw.circle(screen, color=(0,255,0), width= 10)
 
 
 
+    # Bucle principal
+    clock = pygame.time.Clock()
+    running = True
 
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
+        screen.fill(BLANCO)
+    
+        pygame.display.flip()
+        clock.tick(30)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    pygame.quit()
+    sys.exit()
