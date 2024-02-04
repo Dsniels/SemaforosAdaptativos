@@ -201,12 +201,27 @@ def inicializacionSemaforos():
 
 
 def cicloSemaforos():
+
     while(señales[señalEnVerde].verde > 0 ):
         temporizador()
         time.sleep(1)
+    señalEnAmarillo = 1
+    while(señales[señalEnVerde].amarillo > 0):
+        temporizador()
+        time.sleep(1)
+    señalEnAmarillo = 0
 
+    
+    #estas lineas resetean los tiempos de los semaforos actuales
+    señales[señalEnVerde].verde = verde[señalEnVerde]
+    señales[señalEnVerde].amarillo = amarillo
+    señales[señalEnVerde].rojo = rojo
 
-
+    señalEnVerde = proximaVerde #cambia de semaforo actual 
+    proximaVerde  = (señalEnVerde + 1) % numeroSemaforos #aumenta el valor para ir al proximo semaforo
+    señales[proximaVerde].rojo = señales[señalEnVerde].amarillo + señalEnAmarillo[señalEnVerde].verde 
+    
+    cicloSemaforos()
 
 
 def temporizador():
@@ -218,8 +233,6 @@ def temporizador():
                 señales[i].amarillo -= 1
         else:
             señales[i].rojo -= 1
-        
-
 
 
 
