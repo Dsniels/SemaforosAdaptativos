@@ -266,18 +266,19 @@ class inicio:
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Simulador de Tráfico")
 
-
+    
+    #colores de semaforos
     SemaforoRojo = pygame.draw.circle(screen, color=(255,0,0), width= 10)
     SemaforoAmarillo = pygame.draw.circle(screen, color=(240,437,0), width= 10)
     SemaforoVerde = pygame.draw.circle(screen, color=(0,255,0), width= 10)
 
+    thread_autos = threading.Thread(name = "Creacion de autos", target=crearAutos, args=())
+    thread_autos.daemon = True
+    thread_autos.start()
 
+    false = True
 
-    # Bucle principal
-    clock = pygame.time.Clock()
-    running = True
-
-    while running:
+    while false:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
