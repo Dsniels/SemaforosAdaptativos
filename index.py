@@ -17,15 +17,16 @@ BLANCO = (255, 255, 255)
 AZUL = (0, 0, 255)
 GRIS = (169, 169, 169)
 
+#tiempos de semaforos en verde
 verde = {
     0 : 9,
     1 : 9,
     2 : 9,
     3 : 9
 }
-
+#tiempos de semaforos en rojo
 rojo = 100
-
+#tiempo en semaforos en amarillo
 amarillo = 3
 
 numeroSemaforos = 4
@@ -185,20 +186,39 @@ class Auto:
                 self.image.y -= self.velocidad
 
 
+def inicializacionSemaforos():
+
+    #crear semaforos
+    S1 = Semaforos(verde[0],amarillo, rojo)
+    señales.append(S1)
+    S2 = Semaforos(verde[1], amarillo, rojo)
+    señales.append(S2)
+    S3 = Semaforos(verde[2], amarillo, rojo)
+    señales.append(S3)
+    S4 = Semaforos(verde[3], amarillo, rojo)
+    señales.append(S4)
 
 
 
-    
+def cicloSemaforos():
+    while(señales[señalEnVerde].verde > 0 ):
+        temporizador()
+        time.sleep(1)
 
 
 
 
 
-
-
+def temporizador():
+    for i in range(0, numeroSemaforos):
+        if i == señalEnVerde:
+            if señalEnAmarillo == 0:
+                señales[i].verde -= 1
+            else:
+                señales[i].amarillo -= 1
+        else:
+            señales[i].rojo -= 1
         
-
-
 
 
 
