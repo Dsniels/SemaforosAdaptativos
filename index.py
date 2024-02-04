@@ -278,10 +278,29 @@ class inicio:
 
     false = True
 
+    background = BLANCO
+
     while false:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                false = False
+                sys.exit()
+
+        screen.blit(background, (0,0)) #mostrara en la ventana el fondo blanco
+
+
+        #este ciclo for mostrara los semaforos en las coordenadas declaradas
+        for i in range(0, numeroSemaforos):
+            if i == señalEnVerde:
+                if señalEnAmarillo == 1:
+                    screen.blit(SemaforoAmarillo, semaforoCoordenadas[i])
+                else:
+                    screen.blit(SemaforoVerde, semaforoCoordenadas[i])
+            else:
+                screen.blit(SemaforoRojo, semaforoCoordenadas[i])
+
+
+        
 
         screen.fill(BLANCO)
     
