@@ -84,7 +84,7 @@ numeroDireccion = {
 semaforoCoordenadas = [(530, 230), (810, 230), (810, 570), (530, 570)]
 
 paradas = {
-    'derecha': 500, 
+    'derecha': 580, 
     'izquierda': 810, 
     'arriba': 545, 
     'abajo': 320 
@@ -100,11 +100,7 @@ class Semaforos:
         self.amarillo = amarillo
         self.rojo = rojo
 
-def valoresIniciales():
-    S1 = Semaforos(verde[0], amarillo = amarillo, rojo = 0)
-    señales.append(S1)
-    S2 = Semaforos(verde=verde[1], amarillo=amarillo, rojo= S1.rojo + S1.amarillo + S1.verde)
-    señales.append(S1)
+
 
 class Auto:
     def __init__(self, carril, direction): #carril en el que se generarar, direccion a la que ira
@@ -113,7 +109,7 @@ class Auto:
         #coordenadas en las que se generarar
         self.x = x[direction][carril]
         self.y = y[direction][carril]
-        self.velocidad = 2.25
+        self.velocidad = 1.00
         self.cruzo = 0
         self.image = pygame.Rect(self.x, self.y, 20, 20) #Rectangulo que representa el auto
         autos[direction][carril].append(self) #Esta linea almacenara el auto en el carril correspondiente 
@@ -125,16 +121,29 @@ class Auto:
         if(len(autos[direction][carril]) > 1 and autos[direction][carril][self.i -1].cruzo == 0):
 
             if direction == 'derecha':
-                self.stop = autos[direction][carril][self.i-1].stop - autos[direction][carril][self.i - 1].image.width - 15
-            if direction == 'izquierda':
-                self.stop = autos[direction][carril][self.i-1].stop + autos[direction][carril][self.i - 1].image.width + 15
-            if direction == 'abajo':
-                self.stop = autos[direction][carril][self.i-1].stop - autos[direction][carril][self.i - 1].image.width - 15
-            if direction == 'arriba':
-                self.stop = autos[direction][carril][self.i-1].stop + autos[direction][carril][self.i - 1].image.width + 15
+                self.stop = autos[direction][carril][self.i-1].stop - autos[direction][carril][self.i - 1].image.size[0] - 15
+            elif direction == 'izquierda':
+                self.stop = autos[direction][carril][self.i-1].stop + autos[direction][carril][self.i - 1].image.size[0] + 15
+            elif direction == 'abajo':
+                self.stop = autos[direction][carril][self.i-1].stop - autos[direction][carril][self.i - 1].image.size[0]- 15
+            elif direction == 'arriba':
+                self.stop = autos[direction][carril][self.i-1].stop + autos[direction][carril][self.i - 1].image.size[0]+ 15
 
         else:
             self.stop = paradas[direction]
+
+        if direction == 'derecha':
+             temp = self.image.size[0] + 15
+             x[direction][carril] -= temp
+        elif direction == 'izquierda':
+             temp = self.image.size[0] + 15
+             x[direction][carril] += temp
+        elif direction == 'abajo':
+             temp = self.image.size[0] + 15
+             y[direction][carril] -= temp
+        elif direction == 'arriba':
+             temp = self.image.size[0] + 15
+             y[direction][carril] += temp
 
         simulacion.append(self)
 
@@ -152,9 +161,8 @@ class Auto:
                 #   * ||    cruzo == 0
                 #     || *  cruzo == 1
 
-            if((self.image.x + self.image.size[0] <= self.stop or self.cruzo == 1 or (señalEnVerde == 0 and señalEnAmarillo == 0)) and 
-               (self.i == 0 or self.image.x + self.image.size[0] < (autos[self.direccion][self.carril][self.i - 1 ].image.x - 15))):
-                self.x += self.velocidad
+            if (self.image.x + self.image.size[0] <= self.stop or self.cruzo == 1 or (señalEnVerde == 0 and señalEnAmarillo == 0)) and (self.i == 0 or self.image.x + self.image.size[0] < (autos[self.direccion][self.carril][self.i - 1].image.x - 15)):
+                self.image.x += self.velocidad
 
         elif self.direccion == 'abajo':
 
@@ -162,9 +170,8 @@ class Auto:
             if(self.cruzo == 0 and self.image.y + self.image.size[0] > paradas[self.direccion]):
                 self.cruzo = 1
                 
-            if((self.image.y + self.image.size[0] <= self.stop or self.cruzo == 1 or (señalEnVerde == 1 and señalEnAmarillo == 0)) and 
-               (self.i == 0 or self.image.y + self.image.size[0] < (autos[self.direccion][self.carril][self.i - 1 ].image.y - 15))): 
-                self.y += self.velocidad
+            if (self.image.y + self.image.size[0] <= self.stop or self.cruzo == 1 or (señalEnVerde == 1 and señalEnAmarillo == 0)) and (self.i == 0 or self.image.y + self.image.size[0] < (autos[self.direccion][self.carril][self.i - 1].image.y - 15)):
+                self.image.y += self.velocidad
 
         elif self.direccion == 'izquierda':
 
@@ -173,7 +180,7 @@ class Auto:
                 self.cruzo = 1
             if((self.image.x >= self.stop or self.cruzo == 1 or (señalEnVerde == 2 and señalEnAmarillo == 0)) and 
                (self.i == 0 or self.image.x + self.image.size[0] > (autos[self.direccion][self.carril][self.i - 1 ].image.x + autos[self.direccion][self.carril][self.i - 1].image.width + 15))):
-                self.x -= self.velocidad
+                self.image.x -= self.velocidad
 
         
         elif self.direccion == 'arriba':
@@ -181,7 +188,7 @@ class Auto:
                 self.cruzo = 1
             if((self.image.y >= self.stop or self.cruzo == 1 or (señalEnVerde == 3 and señalEnAmarillo == 0)) and 
                (self.i == 0 or self.image.y + self.image.size[0] > (autos[self.direccion][self.carril][self.i - 1 ].image.y + autos[self.direccion][self.carril][self.i - 1].image.width + 15))):
-                self.y -= self.velocidad
+                self.image.y -= self.velocidad
 
 
 def inicializacionSemaforos():
