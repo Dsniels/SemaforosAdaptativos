@@ -20,7 +20,7 @@ verde = {
 #tiempos de semaforos en rojo
 rojo = 100
 #tiempo en semaforos en amarillo
-amarillo = 3
+amarillo = 5
 
 numeroSemaforos = 4
 
@@ -52,25 +52,25 @@ autos = {
         0: [], 
         1: [], 
         2: [], 
-        'crossed': 0
+        'cruzo': 0
         }, 
     'abajo': {
         0: [],
         1: [], 
         2: [], 
-        'crossed': 0
+        'cruzo': 0
         },
     'izquierda': {
         0: [], 
         1: [], 
         2: [], 
-        'crossed': 0
+        'cruzo': 0
         }, 
     'arriba': {
         0: [], 
         1: [], 
         2: [], 
-        'crossed': 0
+        'cruzo': 0
         }
 }
 
@@ -84,11 +84,12 @@ numeroDireccion = {
 semaforoCoordenadas = [(530, 230), (810, 230), (810, 570), (530, 570)]
 
 paradas = {
-    'derecha': 580, 
-    'izquierda': 810, 
-    'arriba': 545, 
-    'abajo': 320 
+    'derecha': 590, 
+    'izquierda': 800, 
+    'arriba': 535, 
+    'abajo': 330 
     }
+defaultStop = {'derecha': 540, 'abajo': 280, 'izquierda': 810, 'arriba': 545}
 
 # Inicializar Pygame
 pygame.init()
@@ -109,7 +110,7 @@ class Auto:
         #coordenadas en las que se generarar
         self.x = x[direction][carril]
         self.y = y[direction][carril]
-        self.velocidad = 1.00
+        self.velocidad = 1.5
         self.cruzo = 0
         self.image = pygame.Rect(self.x, self.y, 20, 20) #Rectangulo que representa el auto
         autos[direction][carril].append(self) #Esta linea almacenara el auto en el carril correspondiente 
@@ -121,28 +122,28 @@ class Auto:
         if(len(autos[direction][carril]) > 1 and autos[direction][carril][self.i -1].cruzo == 0):
 
             if direction == 'derecha':
-                self.stop = autos[direction][carril][self.i-1].stop - autos[direction][carril][self.i - 1].image.size[0] - 15
+                self.stop = autos[direction][carril][self.i-1].stop - autos[direction][carril][self.i - 1].image.width - 15
             elif direction == 'izquierda':
-                self.stop = autos[direction][carril][self.i-1].stop + autos[direction][carril][self.i - 1].image.size[0] + 15
+                self.stop = autos[direction][carril][self.i-1].stop + autos[direction][carril][self.i - 1].image.width + 15
             elif direction == 'abajo':
-                self.stop = autos[direction][carril][self.i-1].stop - autos[direction][carril][self.i - 1].image.size[0]- 15
+                self.stop = autos[direction][carril][self.i-1].stop - autos[direction][carril][self.i - 1].image.height- 15
             elif direction == 'arriba':
-                self.stop = autos[direction][carril][self.i-1].stop + autos[direction][carril][self.i - 1].image.size[0]+ 15
+                self.stop = autos[direction][carril][self.i-1].stop + autos[direction][carril][self.i - 1].image.height+ 15
 
         else:
-            self.stop = paradas[direction]
+            self.stop = defaultStop[direction]
 
         if direction == 'derecha':
-             temp = self.image.size[0] + 15
+             temp = self.image.width + 15
              x[direction][carril] -= temp
         elif direction == 'izquierda':
-             temp = self.image.size[0] + 15
+             temp = self.image.width + 15
              x[direction][carril] += temp
         elif direction == 'abajo':
-             temp = self.image.size[0] + 15
+             temp = self.image.height + 15
              y[direction][carril] -= temp
         elif direction == 'arriba':
-             temp = self.image.size[0] + 15
+             temp = self.image.height + 15
              y[direction][carril] += temp
 
         simulacion.append(self)
@@ -153,25 +154,29 @@ class Auto:
     def mover(self):
 
         if self.direccion == 'derecha':
-
-
-            if(self.cruzo == 0 and self.image.x + self.image.size[0] > paradas[self.direccion]):
+            
+            if (self.cruzo == 0 and self.image.x + self.image.width > paradas[self.direccion]):
                 self.cruzo = 1
-                #  *  ||    cruzo == 0
-                #   * ||    cruzo == 0
-                #     || *  cruzo == 1
+                
+            if ((self.image.x + self.image.width <= self.stop or self.cruzo == 1 or (
+                    señalEnVerde == 0 and señalEnAmarillo == 0)) and (
+                    self.i == 0 or self.image.x + self.image.width < (
+                    autos[self.direccion][self.carril][self.i - 1].image.x - 15))):
 
-            if (self.image.x + self.image.size[0] <= self.stop or self.cruzo == 1 or (señalEnVerde == 0 and señalEnAmarillo == 0)) and (self.i == 0 or self.image.x + self.image.size[0] < (autos[self.direccion][self.carril][self.i - 1].image.x - 15)):
-                self.image.x += self.velocidad
+                                self.image.x += self.velocidad
+
 
         elif self.direccion == 'abajo':
 
-
-            if(self.cruzo == 0 and self.image.y + self.image.size[0] > paradas[self.direccion]):
+            if (self.cruzo == 0 and self.image.y + self.image.height > paradas[self.direccion]):
                 self.cruzo = 1
-                
-            if (self.image.y + self.image.size[0] <= self.stop or self.cruzo == 1 or (señalEnVerde == 1 and señalEnAmarillo == 0)) and (self.i == 0 or self.image.y + self.image.size[0] < (autos[self.direccion][self.carril][self.i - 1].image.y - 15)):
+
+
+
+            if ((self.image.y + self.image.height <= self.stop or self.cruzo == 1 or (señalEnVerde == 1 and señalEnAmarillo == 0)) and (self.i == 0 or self.image.y + self.image.height < (autos[self.direccion][self.carril][self.i - 1].image.y - 15))):
+
                 self.image.y += self.velocidad
+    
 
         elif self.direccion == 'izquierda':
 
@@ -227,10 +232,10 @@ def cicloSemaforos():
     señales[señalEnVerde].amarillo = amarillo
     señales[señalEnVerde].rojo = rojo
 
+    
     señalEnVerde = proximaVerde #cambia de semaforo actual 
     proximaVerde  = (señalEnVerde + 1) % numeroSemaforos #aumenta el valor para ir al proximo semaforo
-    señales[proximaVerde].rojo = señales[señalEnVerde].amarillo + señalEnAmarillo * señales[señalEnVerde].verde
-
+    señales[proximaVerde].rojo = señales[señalEnVerde].amarillo + señales[señalEnVerde].verde 
     cicloSemaforos()
 
 
@@ -296,6 +301,7 @@ class inicio:
             if event.type == pygame.QUIT:
                 false = False
                 sys.exit()
+                pygame.quit()
 
         screen.fill(background) #mostrara en la ventana el fondo blanco
 
