@@ -9,24 +9,30 @@ import time
 BLANCO = (255, 255, 255)
 AZUL = (0, 0, 255)
 GRIS = (169, 169, 169)
+carrilLleno = {
+     0 : 0,
+     1 : 0,
+     2 : 0,
+     3 : 0,
 
+}
 #tiempos de semaforos en verde
 verde = {
-    0 : 9,
-    1 : 9,
-    2 : 9,
-    3 : 9
+    0 : 5,
+    1 : 5,
+    2 : 5,
+    3 : 5
 }
 #tiempos de semaforos en rojo
 rojo = 100
 #tiempo en semaforos en amarillo
 amarillo = 5
-
+maximo = max(carrilLleno, key=carrilLleno.get)
 numeroSemaforos = 4
-
+fila = [maximo]
 señales=[]
 señalEnVerde = 0
-proximaVerde = (señalEnVerde + 1) % numeroSemaforos
+proximaVerde = fila[0]
 señalEnAmarillo = 0
 
 
@@ -90,6 +96,8 @@ paradas = {
     'abajo': 330 
     }
 defaultStop = {'derecha': 540, 'abajo': 280, 'izquierda': 810, 'arriba': 545}
+
+
 
 # Inicializar Pygame
 pygame.init()
@@ -219,7 +227,7 @@ def cicloSemaforos():
     señalEnAmarillo = 1
 
     for i in range(0, 3):
-	    for vehicle in autos[numeroDireccion[señalEnVerde]][i]:
+        for vehicle in autos[numeroDireccion[señalEnVerde]][i]:
               vehicle.stop = paradas[numeroDireccion[señalEnVerde]]
               
     while(señales[señalEnVerde].amarillo > 0):
@@ -232,10 +240,8 @@ def cicloSemaforos():
     señales[señalEnVerde].amarillo = amarillo
     señales[señalEnVerde].rojo = rojo
 
-    
-    señalEnVerde = proximaVerde #cambia de semaforo actual 
-    proximaVerde  = (señalEnVerde + 1) % numeroSemaforos #aumenta el valor para ir al proximo semaforo
-    señales[proximaVerde].rojo = señales[señalEnVerde].amarillo + señales[señalEnVerde].verde 
+    proximoSemaforo()
+
     cicloSemaforos()
 
 
@@ -254,21 +260,48 @@ def temporizador():
 
 def crearAutos():
 
-	while True:
-		carril = random.randint(1, 2)
-		temp = random.randint(0, 99)
-		direction_number = 0
-		dist = [25, 50, 75, 100]
-		if temp < dist[0]:
-			direction_number = 0
-		elif temp < dist[1]:
-			direction_number = 1
-		elif temp < dist[2]:
-			direction_number = 2
-		elif (temp < dist[3]):
-			direction_number = 3
-		Auto(carril, numeroDireccion[direction_number])
-		time.sleep(1)
+    while True:
+        carril = random.randint(1, 2)
+        temp = random.randint(0, 99)
+        direction_number = 0
+        dist = [25, 50, 75, 100]
+        if temp < dist[0]:
+            direction_number = 0
+        elif temp < dist[1]:
+            direction_number = 1
+        elif temp < dist[2]:
+            direction_number = 2
+        elif (temp < dist[3]):
+            direction_number = 3
+        Auto(carril, numeroDireccion[direction_number])
+        carrilLleno[direction_number] += 1
+
+        time.sleep(1)
+
+
+
+def proximoSemaforo():
+    global proximaVerde, señalEnVerde, señalEnAmarillo
+
+    maximo = max(carrilLleno, key=carrilLleno.get)
+    
+    fila.append(maximo)
+    if maximo == 0:
+        carrilLleno[0] = 0
+    elif maximo == 1:
+        carrilLleno[1] = 0
+    elif maximo == 2:
+        carrilLleno[2] = 0
+    elif maximo == 3:
+        carrilLleno[3] = 0
+    proximaVerde = fila[0]
+    
+    señalEnVerde = proximaVerde #cambia de semaforo actual 
+
+    fila.pop(0)
+    señales[proximaVerde].rojo = señales[señalEnVerde].amarillo + señales[señalEnVerde].verde 
+
+    
 
 
 class inicio:
