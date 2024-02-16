@@ -27,12 +27,12 @@ verde = {
 rojo = 100
 #tiempo en semaforos en amarillo
 amarillo = 5
-maximo = max(carrilLleno, key=carrilLleno.get)
+maximo = 3
 numeroSemaforos = 4
 fila = [maximo]
 señales=[]
-señalEnVerde = 0
 proximaVerde = fila[0]
+señalEnVerde = proximaVerde
 señalEnAmarillo = 0
 
 
@@ -92,10 +92,11 @@ semaforoCoordenadas = [(530, 230), (810, 230), (810, 570), (530, 570)]
 paradas = {
     'derecha': 590, 
     'izquierda': 800, 
-    'arriba': 535, 
+    'arriba': 550, 
     'abajo': 330 
     }
-defaultStop = {'derecha': 540, 'abajo': 280, 'izquierda': 810, 'arriba': 545}
+defaultStop = {'derecha': 430  , 'abajo': 220, 'izquierda': 930, 'arriba': 645}
+velocidades = {0 : 1.0  , 1: 1.25, 2: 1.10, 3: 0.75}
 
 
 
@@ -112,13 +113,13 @@ class Semaforos:
 
 
 class Auto:
-    def __init__(self, carril, direction): #carril en el que se generarar, direccion a la que ira
+    def __init__(self, carril, direction, velocidad): #carril en el que se generarar, direccion a la que ira
         self.carril = carril
         self.direccion = direction
         #coordenadas en las que se generarar
         self.x = x[direction][carril]
         self.y = y[direction][carril]
-        self.velocidad = 1.5
+        self.velocidad = velocidad
         self.cruzo = 0
         self.image = pygame.Rect(self.x, self.y, 20, 20) #Rectangulo que representa el auto
         autos[direction][carril].append(self) #Esta linea almacenara el auto en el carril correspondiente 
@@ -153,7 +154,6 @@ class Auto:
         elif direction == 'arriba':
              temp = self.image.height + 15
              y[direction][carril] += temp
-
         simulacion.append(self)
 
     
@@ -203,7 +203,6 @@ class Auto:
                (self.i == 0 or self.image.y + self.image.size[0] > (autos[self.direccion][self.carril][self.i - 1 ].image.y + autos[self.direccion][self.carril][self.i - 1].image.width + 15))):
                 self.image.y -= self.velocidad
 
-
 def inicializacionSemaforos():
 
     #crear semaforos
@@ -216,7 +215,6 @@ def inicializacionSemaforos():
     S4 = Semaforos(verde[3], amarillo, rojo)
     señales.append(S4)
     cicloSemaforos()
-
 
 def cicloSemaforos():
     global señalEnVerde, señalEnAmarillo, proximaVerde
@@ -244,7 +242,6 @@ def cicloSemaforos():
 
     cicloSemaforos()
 
-
 def temporizador():
     for i in range(0, numeroSemaforos):
         if i == señalEnVerde:
@@ -262,6 +259,7 @@ def crearAutos():
 
     while True:
         carril = random.randint(1, 2)
+        velocidad = random.randint(0,3)
         temp = random.randint(0, 99)
         direction_number = 0
         dist = [25, 50, 75, 100]
@@ -273,7 +271,7 @@ def crearAutos():
             direction_number = 2
         elif (temp < dist[3]):
             direction_number = 3
-        Auto(carril, numeroDireccion[direction_number])
+        Auto(carril, numeroDireccion[direction_number], velocidades[velocidad])
         carrilLleno[direction_number] += 1
 
         time.sleep(1)
@@ -305,6 +303,8 @@ def proximoSemaforo():
 
 
 class inicio:
+
+
     
     thread_inicio = threading.Thread(name="Inicio", target= inicializacionSemaforos, args=())
     thread_inicio.daemon = True
@@ -313,6 +313,7 @@ class inicio:
     
     # Configuración de la pantalla
     WIDTH, HEIGHT = 1400, 700
+    fondo = pygame.image.load("Calle.jpg")
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Simulador de Tráfico")
 
@@ -327,7 +328,7 @@ class inicio:
     ROJO = (255,0,0)
     VERDE = (0, 255, 0)
 
-    background = BLANCO
+    background = 'calle.jpg'
 
     while false:
         for event in pygame.event.get():
@@ -336,8 +337,8 @@ class inicio:
                 sys.exit()
                 pygame.quit()
 
-        screen.fill(background) #mostrara en la ventana el fondo blanco
-
+        screen.blit(fondo, (0,0))
+        
 
         #este ciclo for mostrara los semaforos en las coordenadas declaradas
         for i in range(0, numeroSemaforos):
